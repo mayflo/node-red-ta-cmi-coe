@@ -53,6 +53,168 @@
     });
 </script>
 
+<!-- CoE Monitor Node -->
+<script type="text/html" data-template-name="coe-monitor">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="CoE Monitor">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmiconfig"><i class="fa fa-cog"></i> CMI Config</label>
+        <input type="text" id="node-input-cmiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-filterNodeNumber"><i class="fa fa-filter"></i> Filter Node</label>
+        <input type="number" id="node-input-filterNodeNumber" placeholder="0 = alle" min="0" max="62">
+        <div style="margin-left: 110px; margin-top: 5px; font-size: 0.9em; color: #666;">
+            0 oder leer = empfange von allen Knoten
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-filterDataType"><i class="fa fa-list"></i> Filter Type</label>
+        <select id="node-input-filterDataType">
+            <option value="all">Alle (Analog + Digital)</option>
+            <option value="analog">Nur Analog</option>
+            <option value="digital">Nur Digital</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-includeRaw"><i class="fa fa-code"></i> Include Raw</label>
+        <input type="checkbox" id="node-input-includeRaw" style="width:auto; margin-left:0;">
+        <span style="margin-left:10px;">Füge Rohdaten zu msg.payload.raw hinzu</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="coe-monitor">
+    <p>Empfängt und überwacht alle CoE (CAN over Ethernet) Pakete von allen Quellen.</p>
+    <p>Ideal für Debugging, Logging und Überwachung des gesamten CoE-Verkehrs.</p>
+    
+    <h3>Konfiguration</h3>
+    <dl class="message-properties">
+        <dt>CMI Config <span class="property-type">config</span></dt>
+        <dd>Auswahl des CMI Config Nodes (UDP Port wird von dort übernommen)</dd>
+        
+        <dt>Filter Node <span class="property-type">number</span></dt>
+        <dd>Optional: Filtere nur Pakete von einem bestimmten CAN-Knoten (0 = alle)</dd>
+        
+        <dt>Filter Type <span class="property-type">string</span></dt>
+        <dd>Filtere nach Datentyp: Alle, nur Analog oder nur Digital</dd>
+        
+        <dt>Include Raw <span class="property-type">boolean</span></dt>
+        <dd>Füge vollständige Rohdaten in msg.payload.raw hinzu</dd>
+    </dl>
+    
+    <h3>Ausgabe</h3>
+    <p>Der Node sendet für jedes empfangene CoE-Paket eine Nachricht:</p>
+    
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Vollständige Paketinformationen:
+            <ul>
+                <li><code>nodeNumber</code>: CAN Knoten-Nummer</li>
+                <li><code>blockNumber</code>: CoE Block-Nummer (0,1-9)</li>
+                <li><code>dataType</code>: "analog" oder "digital"</li>
+                <li><code>values</code>: Array mit Werten (4 oder 16)</li>
+                <li><code>units</code>: Array mit Unit IDs (nur analog)</li>
+                <li><code>valuesDetailed</code>: Aufgeschlüsselte Werte mit Output-Nummern</li>
+                <li><code>sourceIP</code>: IP-Adresse der Quelle</li>
+                <li><code>version</code>: CoE Version (1 oder 2)</li>
+                <li><code>timestamp</code>: ISO-8601 Zeitstempel</li>
+                <li><code>raw</code>: Rohdaten (wenn aktiviert)</li>
+            </ul>
+        </dd>
+        
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Format: <code>coe/monitor/{nodeNumber}/block/{blockNumber}</code></dd>
+    </dl>
+    
+    <h3>Beispiel Ausgabe (Analog)</h3>
+    <pre>{
+  payload: {
+    nodeNumber: 10,
+    blockNumber: 1,
+    dataType: "analog",
+    values: [22.5, 45.3, 0, 18.7],
+    units: [1, 8, 0, 1],
+    valuesDetailed: [
+      { outputNumber: 1, value: 22.5, unit: 1, unitName: "Temperatur", unitSymbol: "°C" },
+      { outputNumber: 2, value: 45.3, unit: 8, unitName: "Prozent", unitSymbol: "%" },
+      { outputNumber: 3, value: 0, unit: 0, unitName: "dimensionslos", unitSymbol: "" },
+      { outputNumber: 4, value: 18.7, unit: 1, unitName: "Temperatur", unitSymbol: "°C" }
+    ],
+    sourceIP: "192.168.1.100",
+    version: 1,
+    timestamp: "2025-11-12T10:30:45.123Z"
+  },
+  topic: "coe/monitor/10/block/1"
+}</pre>
+    
+    <h3>Beispiel Ausgabe (Digital)</h3>
+    <pre>{
+  payload: {
+    nodeNumber: 10,
+    blockNumber: 0,
+    dataType: "digital",
+    values: [1,0,1,1,0,0,0,1,1,1,0,0,1,0,1,0],
+    valuesDetailed: [
+      { outputNumber: 1, value: true, state: "ON" },
+      { outputNumber: 2, value: false, state: "OFF" },
+      ...
+      { outputNumber: 16, value: false, state: "OFF" }
+    ],
+    sourceIP: "192.168.1.100",
+    version: 1,
+    timestamp: "2025-11-12T10:30:45.123Z"
+  },
+  topic: "coe/monitor/10/block/0"
+}</pre>
+    
+    <h3>Verwendung</h3>
+    <ul>
+        <li><b>Debugging</b>: Überwache den gesamten CoE-Verkehr</li>
+        <li><b>Logging</b>: Speichere alle Pakete in Datenbank/File</li>
+        <li><b>Analyse</b>: Untersuche Kommunikationsmuster</li>
+        <li><b>Entwicklung</b>: Teste neue Geräte/Konfigurationen</li>
+    </ul>
+    
+    <h3>Tipp</h3>
+    <p>Verwende einen <b>switch</b> Node nach dem Monitor, um Pakete nach Node Number oder Block Number zu routen:</p>
+    <pre>switch on msg.payload.nodeNumber
+case 10: → Node 10 Handler
+case 11: → Node 11 Handler
+default: → Other Nodes Handler</pre>
+    
+    <h3>Performance</h3>
+    <p>Der Monitor Node empfängt <b>alle</b> CoE-Pakete auf dem konfigurierten Port. 
+    Bei vielen Geräten kann das zu hoher Last führen. Nutze die Filter-Optionen!</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('coe-monitor', {
+        category: 'TA CMI',
+        color: '#FFA500',  // Orange für Monitor
+        defaults: {
+            name: { value: "" },
+            cmiconfig: { value: "", type: "cmi-config", required: true },
+            filterNodeNumber: { value: 0, validate: RED.validators.number() },
+            filterDataType: { value: "all" },
+            includeRaw: { value: false }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "status.png",  // oder "eye.png" wenn verfügbar
+        label: function() {
+            if (this.filterNodeNumber && this.filterNodeNumber > 0) {
+                return this.name || `CoE Monitor (Node ${this.filterNodeNumber})`;
+            }
+            return this.name || "CoE Monitor (All)";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
 <!-- CoE Input Node -->
 <script type="text/html" data-template-name="coe-input">
     <div class="form-row">
@@ -66,6 +228,9 @@
     <div class="form-row">
         <label for="node-input-nodeNumber"><i class="fa fa-sitemap"></i> Node Number</label>
         <input type="number" id="node-input-nodeNumber" placeholder="1" min="0" max="62">
+        <div style="margin-left: 110px; margin-top: 5px; font-size: 0.9em; color: #666;">
+            0 = empfange von beliebigem Knoten (nicht empfohlen in Produktion)
+        </div>
     </div>
     <div class="form-row">
         <label for="node-input-outputNumber"><i class="fa fa-hashtag"></i> Output Number</label>
@@ -78,34 +243,34 @@
             <option value="digital">Digital</option>
         </select>
     </div>
-    <div class="form-row">
-        <label for="node-input-receiveAll"><i class="fa fa-check-square"></i> Receive All</label>
-        <input type="checkbox" id="node-input-receiveAll" style="width:auto; margin-left:0;">
-        <span style="margin-left:10px;">Empfange Daten von allen Quellen (Debug)</span>
-    </div>
 </script>
 
 <script type="text/html" data-help-name="coe-input">
     <p>Empfängt Werte von einer TA CMI über CoE (CAN over Ethernet). Unterstützt CoE V1 und V2.</p>
+    
     <h3>Konfiguration</h3>
     <dl class="message-properties">
         <dt>CMI Config <span class="property-type">string</span></dt>
-        <dd>Auswahl des CMI (IP-Adresse wird gefiltert wenn "Receive All" deaktiviert ist)</dd>
+        <dd>Auswahl des CMI (IP-Adresse wird gefiltert)</dd>
+        
         <dt>Node Number <span class="property-type">number</span></dt>
-        <dd>CAN Knoten-Nummer (0-62, 0 = deaktiviert)</dd>
+        <dd>CAN Knoten-Nummer (1-62, 0 = empfange von beliebigem Knoten)</dd>
+        
         <dt>Data Type <span class="property-type">string</span></dt>
         <dd>Analog (1-32) oder Digital (1-32)</dd>
+        
         <dt>Output Number <span class="property-type">number</span></dt>
         <dd>Netzwerkausgangs-Nummer (1-32)</dd>
-        <dt>Receive All <span class="property-type">boolean</span></dt>
-        <dd>Wenn aktiviert, werden alle CoE Pakete empfangen (Debug-Modus)</dd>
     </dl>
+    
     <h3>Ausgabe</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">number | boolean</span></dt>
         <dd>Der empfangene Wert (analog: number, digital: boolean)</dd>
+        
         <dt>topic <span class="property-type">string</span></dt>
         <dd>Format: coe/{nodeNumber}/{dataType}/{outputNumber}</dd>
+        
         <dt>coe <span class="property-type">object</span></dt>
         <dd>CoE Metadaten:
             <ul>
@@ -119,6 +284,7 @@
             </ul>
         </dd>
     </dl>
+    
     <h3>Details</h3>
     <p>Analoge Daten werden basierend auf der Unit ID und CoE Version automatisch konvertiert:
         <ul>
@@ -127,6 +293,9 @@
         </ul>
     </p>
     <p>Die CoE Version wird automatisch erkannt. Im Node-Status wird sie angezeigt: [v1] oder [v2].</p>
+    
+    <h3>Debugging</h3>
+    <p>Für Debug-Zwecke verwende den <b>CoE Monitor Node</b>, der alle Pakete empfängt.</p>
 </script>
 
 <script type="text/javascript">
@@ -138,8 +307,8 @@
             cmiconfig: { value: "", type: "cmi-config", required: true },
             nodeNumber: { value: 1, validate: RED.validators.number() },
             outputNumber: { value: 1, validate: RED.validators.number() },
-            dataType: { value: "analog" },
-            receiveAll: { value: false }
+            dataType: { value: "analog" }
+            // receiveAll wurde entfernt
         },
         inputs: 0,
         outputs: 1,
