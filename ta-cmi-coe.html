@@ -1,0 +1,381 @@
+<!-- ta-cmi-coe.html - Node-RED UI Templates für TA CMI CoE Nodes -->
+
+<!-- CMI Configuration Node -->
+<script type="text/html" data-template-name="cmi-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="CMI Configuration">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-address"><i class="fa fa-server"></i> CMI Address</label>
+        <input type="text" id="node-config-input-address" placeholder="192.168.0.100">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-coeVersion"><i class="fa fa-code-fork"></i> CoE Version</label>
+        <select id="node-config-input-coeVersion">
+            <option value=1>CoE V1 (2 Byte)</option>
+            <option value=2>CoE V2 (4 Byte)</option>
+        </select>
+        <div style="margin-left: 110px; margin-top: 5px; font-size: 0.9em; color: #666;">
+            Siehe Einstellungen > CAN im Menü des CMI
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="cmi-config">
+    <p>CoE (CAN over Ethernet) Konfiguration für TA CMI</p>
+    <h3>Eigenschaften</h3>
+    <dl class="message-properties">
+    	<dt>CMI Address <span class="property-type">number</span></dt>
+        <dd>IP-Adresse des CMI</dd>
+        <dt>CoE Version <span class="property-type">string</span></dt>
+        <dd>
+            <ul>
+                <li><b>V1 (2 Byte)</b>: Standard-Einstellung. Wertebereich: ±32.767</li>
+                <li><b>V2 (4 Byte)</b>: Erweitert, benötigt CMI FW ≥v1.43.1. Wertebereich: ±2.147.483.647</li>
+            </ul>
+        </dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('cmi-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            address: { value: "192.168.0.100" },
+            coeVersion: { value: 1 }
+        },
+        label: function() {
+            const version = this.coeVersion || 1;
+            return this.name || `Address (${this.address || "192.168.0.100"}), CMI Config (${version})`;
+        }
+    });
+</script>
+
+<!-- CoE Input Node -->
+<script type="text/html" data-template-name="coe-input">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="CoE Input">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmiconfig"><i class="fa fa-cog"></i> CMI Config</label>
+        <input type="text" id="node-input-cmiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeNumber"><i class="fa fa-sitemap"></i> Node Number</label>
+        <input type="number" id="node-input-nodeNumber" placeholder="1" min="0" max="62">
+    </div>
+    <div class="form-row">
+        <label for="node-input-outputNumber"><i class="fa fa-hashtag"></i> Output Number</label>
+        <input type="number" id="node-input-outputNumber" placeholder="1" min="1" max="32">
+    </div>
+    <div class="form-row">
+        <label for="node-input-dataType"><i class="fa fa-list"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option value="analog">Analog</option>
+            <option value="digital">Digital</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-receiveAll"><i class="fa fa-check-square"></i> Receive All</label>
+        <input type="checkbox" id="node-input-receiveAll" style="width:auto; margin-left:0;">
+        <span style="margin-left:10px;">Empfange Daten von allen Quellen (Debug)</span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="coe-input">
+    <p>Empfängt Werte von einer TA CMI über CoE (CAN over Ethernet). Unterstützt CoE V1 und V2.</p>
+    <h3>Konfiguration</h3>
+    <dl class="message-properties">
+        <dt>CMI Config <span class="property-type">string</span></dt>
+        <dd>Auswahl des CMI (IP-Adresse wird gefiltert wenn "Receive All" deaktiviert ist)</dd>
+        <dt>Node Number <span class="property-type">number</span></dt>
+        <dd>CAN Knoten-Nummer (0-62, 0 = deaktiviert)</dd>
+        <dt>Data Type <span class="property-type">string</span></dt>
+        <dd>Analog (1-32) oder Digital (1-32)</dd>
+        <dt>Output Number <span class="property-type">number</span></dt>
+        <dd>Netzwerkausgangs-Nummer (1-32)</dd>
+        <dt>Receive All <span class="property-type">boolean</span></dt>
+        <dd>Wenn aktiviert, werden alle CoE Pakete empfangen (Debug-Modus)</dd>
+    </dl>
+    <h3>Ausgabe</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number | boolean</span></dt>
+        <dd>Der empfangene Wert (analog: number, digital: boolean)</dd>
+        <dt>topic <span class="property-type">string</span></dt>
+        <dd>Format: coe/{nodeNumber}/{dataType}/{outputNumber}</dd>
+        <dt>coe <span class="property-type">object</span></dt>
+        <dd>CoE Metadaten:
+            <ul>
+                <li><code>version</code>: "v1" oder "v2"</li>
+                <li><code>nodeNumber</code>: CAN Knoten</li>
+                <li><code>blockNumber</code>: CoE Block</li>
+                <li><code>unit</code>: Unit ID</li>
+                <li><code>unitName</code>: z.B. "Celsius"</li>
+                <li><code>unitSymbol</code>: z.B. "°C"</li>
+                <li><code>sourceIP</code>: CMI IP</li>
+            </ul>
+        </dd>
+    </dl>
+    <h3>Details</h3>
+    <p>Analoge Daten werden basierend auf der Unit ID und CoE Version automatisch konvertiert:
+        <ul>
+            <li><b>V1</b>: Int16 (±32.767) mit konfigurierbaren Nachkommastellen</li>
+            <li><b>V2</b>: Int32 (±2.147.483.647) mit konfigurierbaren Nachkommastellen</li>
+        </ul>
+    </p>
+    <p>Die CoE Version wird automatisch erkannt. Im Node-Status wird sie angezeigt: [v1] oder [v2].</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('coe-input', {
+        category: 'TA CMI',
+        color: '#87CEEB',
+        defaults: {
+            name: { value: "" },
+            cmiconfig: { value: "", type: "cmi-config", required: true },
+            nodeNumber: { value: 1, validate: RED.validators.number() },
+            outputNumber: { value: 1, validate: RED.validators.number() },
+            dataType: { value: "analog" },
+            receiveAll: { value: false }
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "arrow-in.png",
+        label: function() {
+            const type = this.dataType === 'analog' ? 'A' : 'D';
+            return this.name || `CoE In (${type}${this.outputNumber})`;
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<!-- CoE Output Node -->
+<script type="text/html" data-template-name="coe-output">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="CoE Output">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmiconfig"><i class="fa fa-cog"></i> CMI Config</label>
+        <input type="text" id="node-input-cmiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeNumber"><i class="fa fa-sitemap"></i> Node Number</label>
+        <input type="number" id="node-input-nodeNumber" placeholder="1" min="1" max="62">
+    </div>
+    <div class="form-row">
+        <label for="node-input-outputNumber"><i class="fa fa-hashtag"></i> Output Number</label>
+        <input type="number" id="node-input-outputNumber" placeholder="1" min="1" max="32">
+    </div>
+    <div class="form-row">
+        <label for="node-input-dataType"><i class="fa fa-list"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option value="analog">Analog</option>
+            <option value="digital">Digital</option>
+        </select>
+    </div>
+    <div class="form-row" id="unit-row">
+        <label for="node-input-unit"><i class="fa fa-balance-scale"></i> Unit</label>
+        <select id="node-input-unit">
+            <!-- Units werden dynamisch aus units-config.js geladen -->
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="coe-output">
+    <p>Sendet Werte an eine TA CMI über CoE. Unterstützt CoE V1 und V2.</p>
+    <h3>Konfiguration</h3>
+    <dl class="message-properties">
+        <dt>CMI Config <span class="property-type">string</span></dt>
+        <dd>Auswahl des CMI (erforderlich)</dd>
+        <dt>Node Number <span class="property-type">number</span></dt>
+        <dd>Eigene CAN Knoten-Nummer (1-62)</dd>
+        <dt>Data Type <span class="property-type">string</span></dt>
+        <dd>Analog (1-32) oder Digital (1-32)</dd>
+        <dt>Output Number <span class="property-type">number</span></dt>
+        <dd>Ausgangsnummer (1-32)</dd>
+        <dt>Unit <span class="property-type">number</span></dt>
+        <dd>Maßeinheit für analoge Werte (nur bei Analog)</dd>
+    </dl>
+    <h3>Eingabe</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">number | boolean</span></dt>
+        <dd>Der zu sendende Wert (analog: number, digital: boolean)</dd>
+        <dt class="optional">coe.unit <span class="property-type">number</span></dt>
+        <dd>Optional: Unit ID überschreibt die Konfiguration</dd>
+    </dl>
+    <h3>CoE Version Wahl</h3>
+    <p>Die verwendete CoE Version wird in der Config Node festgelegt:
+        <ul>
+            <li><b>V1</b>: Wertebereich ±32.767 (dimensionslos)</li>
+            <li><b>V2</b>: Wertebereich ±2.147.483.647 (dimensionslos)</li>
+        </ul>
+    </p>
+    <p><b>Wichtig:</b> Wenn Werte in V1 den Bereich überschreiten, wird eine Warnung ausgegeben und der Wert wird begrenzt.</p>
+    <h3>Details</h3>
+    <p>Der Wert wird als Teil eines CoE Datenblocks gesendet. Andere Werte im selben Block werden mit 0 gesendet.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('coe-output', {
+        category: 'TA CMI',
+        color: '#87CEEB',
+        defaults: {
+            name: { value: "" },
+            cmiconfig: { value: "", type: "cmi-config", required: true },
+            nodeNumber: { value: 1, validate: RED.validators.number() },
+            outputNumber: { value: 1, validate: RED.validators.number() },
+            dataType: { value: "analog" },
+            unit: { value: 0, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "arrow-out.png",
+        label: function() {
+            const type = this.dataType === 'analog' ? 'A' : 'D';
+            return this.name || `CoE Out (${type}${this.outputNumber})`;
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            const node = this;
+            
+            // Units dynamisch laden
+            $.getJSON('ta-cmi-coe/units', function(units) {
+                const unitSelect = $('#node-input-unit');
+                unitSelect.empty();
+                
+                // Sortiere Units nach ID
+                const sortedUnits = Object.entries(units).sort((a, b) => 
+                    parseInt(a[0]) - parseInt(b[0])
+                );
+                
+                sortedUnits.forEach(([id, unit]) => {
+                    const label = unit.symbol ? 
+                        `${unit.symbol} (${unit.name})` : 
+                        unit.name;
+                    unitSelect.append($('<option>', {
+                        value: id,
+                        text: label
+                    }));
+                });
+                
+                // Setze aktuellen Wert
+                unitSelect.val(node.unit);
+            }).fail(function() {
+                // Fallback wenn API nicht verfügbar
+                const unitSelect = $('#node-input-unit');
+                unitSelect.append($('<option>', { value: 0, text: 'Dimensionslos' }));
+                unitSelect.append($('<option>', { value: 1, text: '°C (Celsius)' }));
+                unitSelect.append($('<option>', { value: 8, text: '% (Prozent)' }));
+                unitSelect.append($('<option>', { value: 10, text: 'kW Leistung' }));
+            });
+            
+            // Show/Hide Unit-Auswahl
+            $("#node-input-dataType").change(function() {
+                if ($(this).val() === "analog") {
+                    $("#unit-row").show();
+                } else {
+                    $("#unit-row").hide();
+                }
+            });
+            $("#node-input-dataType").change();
+        }
+    });
+</script>
+
+<!-- CoE Block Output Node -->
+<script type="text/html" data-template-name="coe-block-output">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="CoE Block Output">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cmiconfig"><i class="fa fa-cog"></i> CMI Config</label>
+        <input type="text" id="node-input-cmiconfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeNumber"><i class="fa fa-sitemap"></i> Node Number</label>
+        <input type="number" id="node-input-nodeNumber" placeholder="1" min="1" max="62">
+    </div>
+    <div class="form-row">
+        <label for="node-input-dataType"><i class="fa fa-list"></i> Data Type</label>
+        <select id="node-input-dataType">
+            <option value="analog">Analog</option>
+            <option value="digital">Digital</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-blockNumber"><i class="fa fa-th"></i> Block Number</label>
+        <input type="number" id="node-input-blockNumber" placeholder="1" min="0" max="9">
+        <div style="margin-left: 110px; margin-top: 5px; font-size: 0.9em; color: #666;">
+            Analog: 1-8 (je 4 Werte), Digital: 0 oder 9 (je 16 Werte)
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="coe-block-output">
+    <p>Sendet einen kompletten Datenblock an eine TA CMI über CoE. Unterstützt V1 und V2.</p>
+    <h3>Konfiguration</h3>
+    <dl class="message-properties">
+        <dt>CMI Config <span class="property-type">string</span></dt>
+        <dd>Auswahl der CMI (erforderlich)</dd>
+        <dt>Node Number <span class="property-type">number</span></dt>
+        <dd>Eigene CAN Knoten-Nummer (1-62)</dd>
+        <dt>Data Type <span class="property-type">string</span></dt>
+        <dd>Analog oder Digital</dd>
+        <dt>Block Number <span class="property-type">number</span></dt>
+        <dd>Block-Nummer (Analog: 1-8, Digital: 0 oder 9)</dd>
+    </dl>
+    <h3>Eingabe</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array</span></dt>
+        <dd>Array mit Werten (Analog: 4 Werte, Digital: 16 Werte oder String mit 16 Bits)</dd>
+        <dt class="optional">coe.units <span class="property-type">array</span></dt>
+        <dd>Optional: Array mit 4 Unit IDs für analoge Blöcke</dd>
+    </dl>
+    <h3>CoE Version</h3>
+    <p>Die CoE Version wird automatisch aus der Config Node übernommen:
+        <ul>
+            <li><b>V1</b>: 2 Byte, Werte als Int16</li>
+            <li><b>V2</b>: 4 Byte (Analog), Werte als Int32</li>
+        </ul>
+    </p>
+    <h3>Beispiele</h3>
+    <p><b>Analog Block:</b></p>
+    <pre>msg.payload = [20.5, 30.0, 15.8, 25.3];
+msg.coe = { units: [1, 1, 1, 1] }; // °C</pre>
+    <p><b>Digital Block:</b></p>
+    <pre>msg.payload = [1,0,1,1,0,0,0,1,1,1,0,0,1,0,1,0];
+// oder als String:
+msg.payload = "1011000111001010";</pre>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('coe-block-output', {
+        category: 'TA CMI',
+        color: '#87CEEB',
+        defaults: {
+            name: { value: "" },
+            cmiconfig: { value: "", type: "cmi-config", required: true },
+            nodeNumber: { value: 1, validate: RED.validators.number() },
+            blockNumber: { value: 1, validate: RED.validators.number() },
+            dataType: { value: "analog" }
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "arrow-out.png",
+        label: function() {
+            return this.name || `CoE Block Out (B${this.blockNumber})`;
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
