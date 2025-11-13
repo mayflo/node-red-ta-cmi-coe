@@ -1,0 +1,76 @@
+{
+  "ta-cmi-coe": {
+    "cmi-config": {
+      "label": {
+        "name": "Name",
+        "address": "CMI Adresse",
+        "coeVersion": "CoE Version"
+      },
+      "help": {
+        "v1": "Standard-Einstellung. Wertebereich: ±32.767",
+        "v2": "Erweitert, benötigt CMI FW ≥v1.43.1. Wertebereich: ±2.147.483.647",
+        "settings": "Siehe Einstellungen > CAN im Menü des CMI"
+      }
+    },
+    "coe-monitor": {
+      "label": {
+        "name": "Name",
+        "cmiconfig": "CMI Config",
+        "filterNodeNumber": "Filter Node",
+        "filterDataType": "Filter Typ",
+        "includeRaw": "Rohdaten einschließen"
+      },
+      "placeholder": {
+        "filterNodeNumber": "0 = alle"
+      },
+      "help": {
+        "description": "Empfängt und überwacht alle CoE (CAN over Ethernet) Pakete von allen Quellen.",
+        "ideal": "Ideal für Debugging, Logging und Überwachung des gesamten CoE-Verkehrs.",
+        "filterNode": "Optional: Filtere nur Pakete von einem bestimmten CAN-Knoten (0 = alle)",
+        "filterType": "Filtere nach Datentyp: Alle, nur Analog oder nur Digital",
+        "includeRaw": "Füge vollständige Rohdaten in msg.payload.raw hinzu"
+      }
+    },
+    "coe-input": {
+      "label": {
+        "name": "Name",
+        "cmiconfig": "CMI Config",
+        "nodeNumber": "Node Nummer",
+        "outputNumber": "Output Nummer",
+        "dataType": "Datentyp"
+      },
+      "help": {
+        "description": "Empfängt Werte von einer TA CMI über CoE (CAN over Ethernet).",
+        "nodeNumber": "CAN Knoten-Nummer (1-62, 0 = empfange von beliebigem Knoten)",
+        "dataType": "Analog (1-32) oder Digital (1-32)"
+      }
+    },
+    "coe-output": {
+      "label": {
+        "name": "Name",
+        "cmiconfig": "CMI Config",
+        "nodeNumber": "Node Nummer",
+        "outputNumber": "Output Nummer",
+        "dataType": "Datentyp",
+        "unit": "Einheit"
+      },
+      "help": {
+        "description": "Sendet Werte an eine TA CMI über CoE.",
+        "version": "Die verwendete CoE Version wird in der Config Node festgelegt"
+      }
+    },
+    "coe-block-output": {
+      "label": {
+        "name": "Name",
+        "cmiconfig": "CMI Config",
+        "nodeNumber": "Node Nummer",
+        "dataType": "Datentyp",
+        "blockNumber": "Block Nummer"
+      },
+      "help": {
+        "description": "Sendet einen kompletten Datenblock an eine TA CMI über CoE.",
+        "blockRange": "Block-Nummer (Analog: 1-8, Digital: 0 oder 9)"
+      }
+    }
+  }
+}
