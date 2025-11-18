@@ -1,5 +1,16 @@
 {
   "ta-cmi-coe": {
+    "common": {
+      "all": "Alle",
+      "analog": "Analog",
+      "digital": "Digital",
+      "configuration": "Konfiguration",
+      "inputs": "Eingänge",
+      "outputs": "Ausgänge",
+      "notes": "Hinweise",
+      "blockMapping": "Block-Zuordnung",
+      "cmiconfig": "CMI Konfig"
+    },
     "cmi-config": {
       "label": {
         "name": "Name",
@@ -15,8 +26,8 @@
     "coe-monitor": {
       "label": {
         "name": "Name",
-        "cmiconfig": "CMI Config",
-        "filterNodeNumber": "Filter Node",
+        "cmiconfig": "CMI Konfig",
+        "filterNodeNumber": "Filter Knoten",
         "filterDataType": "Filter Typ",
         "includeRaw": "Rohdaten einschließen"
       },
@@ -24,7 +35,7 @@
         "filterNodeNumber": "0 = alle"
       },
       "help": {
-        "description": "Empfängt und überwacht alle CoE (CAN over Ethernet) Pakete von allen Quellen.",
+        "description": "Empfängt und überwacht CoE (CAN over Ethernet) Pakete von allen Quellen.",
         "ideal": "Ideal für Debugging, Logging und Überwachung des gesamten CoE-Verkehrs.",
         "filterNode": "Optional: Filtere nur Pakete von einem bestimmten CAN-Knoten (0 = alle)",
         "filterType": "Filtere nach Datentyp: Alle, nur Analog oder nur Digital",
@@ -34,42 +45,61 @@
     "coe-input": {
       "label": {
         "name": "Name",
-        "cmiconfig": "CMI Config",
-        "nodeNumber": "Node Nummer",
-        "outputNumber": "Output Nummer",
+        "cmiconfig": "CMI Konfig",
+        "nodeNumber": "Knoten",
+        "outputNumber": "Netzwerkeingang",
         "dataType": "Datentyp"
       },
+      "placeholder": {
+        "nodeNumber": "1-62, 0 = beliebig"
+      },
       "help": {
-        "description": "Empfängt Werte von einer TA CMI über CoE (CAN over Ethernet).",
-        "nodeNumber": "CAN Knoten-Nummer (1-62, 0 = empfange von beliebigem Knoten)",
-        "dataType": "Analog (1-32) oder Digital (1-32)"
+        "description": "Empfängt Werte von einer TA CMI via CoE (CAN over Ethernet).",
+        "nodeNumber": "CAN Knoten-Nummer (1-62, 0 = von beliebigem Knoten empfangen - nicht empfohlen in Produktion)",
+        "outputNumber": "Nummer des Netzwerkeingangs (1-32)",
+        "dataType": "Analog (1-32) oder Digital (1-32)",
+        "version": "Die verwendete CoE Version wird im Config Node festgelegt"
       }
     },
     "coe-output": {
       "label": {
         "name": "Name",
-        "cmiconfig": "CMI Config",
-        "nodeNumber": "Node Nummer",
-        "outputNumber": "Output Nummer",
+        "cmiconfig": "CMI Konfig",
+        "nodeNumber": "Knoten",
+        "outputNumber": "Netzwerkausgang",
         "dataType": "Datentyp",
         "unit": "Einheit"
       },
       "help": {
-        "description": "Sendet Werte an eine TA CMI über CoE.",
-        "version": "Die verwendete CoE Version wird in der Config Node festgelegt"
+        "description": "Sendet einzelne Werte an eine TA CMI via CoE.",
+        "nodeNumber": "CAN Knoten-Nummer (1-62)",
+        "outputNumber": "Nummer des Netzwerkausgangs (Analog 1-32, Digital 1-16)",
+        "dataType": "Analog (numerisch) oder Digital (boolean)",
+        "unit": "Messeinheit (nur für analog)",
+        "version": "Die verwendete CoE Version wird im Config Node festgelegt",
+        "debouncing": "Werte werden 50ms gepuffert um gegenseitiges Überschreiben zu vermeiden",
+        "inputs": "1 Eingang pro Output Node",
+        "outputs": "2 Ausgänge: [0] durchgeleitete Message, [1] Debug-Info (Hex, Block-State, Units)"
       }
     },
     "coe-block-output": {
       "label": {
         "name": "Name",
-        "cmiconfig": "CMI Config",
-        "nodeNumber": "Node Nummer",
+        "cmiconfig": "CMI Konfig",
+        "nodeNumber": "Knoten",
         "dataType": "Datentyp",
-        "blockNumber": "Block Nummer"
+        "blockNumber": "Datenblock"
       },
       "help": {
-        "description": "Sendet einen kompletten Datenblock an eine TA CMI über CoE.",
-        "blockRange": "Block-Nummer (Analog: 1-8, Digital: 0 oder 9)"
+        "description": "Sendet einen kompletten Datenblock (4 Werte) an eine TA CMI via CoE.",
+        "nodeNumber": "CAN Knoten-Nummer (1-62)",
+        "blockNumber": "Block-Nummer (Editor: 1-8 für beide Typen)",
+        "dataType": "Analog (4 Werte) oder Digital (4 Bits von Block 0 oder 9)",
+        "blockMapping": "Analog: 1-8 direkt zu CoE Blocks 1-8. Digital: 1-4 → Block 0 (Bits 0-15), 5-8 → Block 9 (Bits 0-15)",
+        "inputs": "4 fixe Eingänge (Out 1-4 für Analog, Bit 1-4 für Digital)",
+        "outputs": "2 Ausgänge: [0] Leer, [1] Debug-Info",
+        "debouncing": "Werte werden 100ms gepuffert um Überschreibungen zu vermeiden",
+        "atomic": "Alle 4 Werte werden zusammen als atomares Update gesendet"
       }
     }
   }
