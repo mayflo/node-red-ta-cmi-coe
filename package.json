@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-ta-cmi-coe",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Node-RED nodes for TA CMI CoE (CAN over Ethernet)",
   "author": "Florian Mayrhofer",
   "license": "CC-BY-NC-SA-4.0",

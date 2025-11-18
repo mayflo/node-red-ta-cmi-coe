@@ -4,7 +4,6 @@
 module.exports = function(RED) {
     "use strict";
     const dgram = require('dgram');
-    const path = require('path');
     
     // Importiere Einheiten-Datei
     let UNITS;
@@ -25,9 +24,6 @@ module.exports = function(RED) {
     // CoE Protokoll Konstanten
     const COE_PORT_V1 = 5441;
     const COE_PORT_V2 = 5442;
-    const COE_V1_PACKET_SIZE = 14;
-    const COE_V2_ANALOG_PACKET_SIZE = 22;
-    const COE_V2_DIGITAL_PACKET_SIZE = 14; // Digital bleibt gleich
     
     // ============================================
     // CMI Configuration Node (Shared UDP Socket)
@@ -1037,5 +1033,27 @@ module.exports = function(RED) {
         }
         
         return unitInfo;
+    }
+    
+    function getBlockInfo(dataType, outputNumber) {
+        outputNumber = parseInt(outputNumber);
+        if (isNaN(outputNumber) || outputNumber < 1) {
+            // sichere Default-Antwort
+            return { block: 1, position: 0 };
+        }
+
+        if (dataType === 'analog') {
+            // Analog: Outputs 1..32 → Blocks 1..8 (je 4 Outputs)
+            const block = Math.floor((outputNumber - 1) / 4) + 1; // 1..8
+            const position = (outputNumber - 1) % 4; // 0..3
+            return { block: block, position: position };
+        } else {
+            // Digital: Outputs 1..16 → Block 0, 17..32 → Block 9
+            if (outputNumber <= 16) {
+                return { block: 0, position: outputNumber - 1 }; // 0..15
+            } else {
+                return { block: 9, position: outputNumber - 17 }; // 0..15
+            }
+        }
     }
 };
