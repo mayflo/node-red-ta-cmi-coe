@@ -15,24 +15,22 @@
     "heating",
     "automation"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mayflo/node-red-contrib-ta-cmi-coe.git"
-  },
   "node-red": {
     "nodes": {
-      "ta-cmi-coe": "ta-cmi-coe.js"
-    }
-  },
-  "i18n": {
-    "resources": {
-      "en": { "translation": "locales/en/ta-cmi-coe.json" },
-      "de": { "translation": "locales/de/ta-cmi-coe.json" }
+      "coe-input": "coe/coe-input.js",
+      "coe-output": "coe/coe-output.js",
+      "coe-block-output": "coe/coe-block-output.js",
+      "coe-monitor": "coe/coe-monitor.js",
+      "config": "coe/config.js"
     }
   },
   "dependencies": {},
   "devDependencies": {},
   "engines": {
     "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mayflo/node-red-contrib-ta-cmi-coe.git"
   }
 }
