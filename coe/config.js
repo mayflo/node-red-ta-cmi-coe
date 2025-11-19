@@ -3,7 +3,7 @@
 module.exports = function(RED) {
     "use strict";
     const dgram = require('dgram');
-    const { parseCoEPacket } = require('./utils')(RED);
+    const { parseCoEPacket } = require('../lib/coe');
 
     // CoE Protocol Ports
     const COE_PORT = 5441;

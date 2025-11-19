@@ -3,7 +3,7 @@
 module.exports = function(RED) {
     'use strict';
     const { getBlockInfo } = require('../lib/utils')
-    const { queueAndSend } = require('../lib/queue');
+    const { queueAndSend } = require('../lib/queueing');
     
     const DEBOUNCE_DELAY = 200; // ms
 
