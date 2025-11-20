@@ -1,4 +1,6 @@
-// CMI Configuration Node (Shared UDP Socket)
+/**
+ * CMI Configuration Node (including the shared UDP socket)
+ */ 
 
 module.exports = function(RED) {
     "use strict";
@@ -6,8 +8,8 @@ module.exports = function(RED) {
     const { parseCoEPacket } = require('../lib/coe');
 
     // CoE Protocol Ports
-    const COE_PORT = 5441;
-    const COE_PORT_V2 = 5442;
+    const COE_PORT1 = 5441; // CoE v1
+    const COE_PORT2 = 5442; // CoE v2
 
     function CMIConfigNode(config) {
         RED.nodes.createNode(this, config);
@@ -15,7 +17,7 @@ module.exports = function(RED) {
         
         node.address = config.address || '192.168.0.100';
         node.coeVersion = config.coeVersion || 1; // v1, v2
-        node.port = (node.coeVersion === 2) ? COE_PORT_V2 : COE_PORT;
+        node.port = (node.coeVersion === 2) ? COE_PORT2 : COE_PORT1;
         node.localAddress = '0.0.0.0';
         node.socket = null;
         node.listeners = [];
@@ -35,7 +37,7 @@ module.exports = function(RED) {
                 if (data) {
                     data.sourceIP = rinfo.address;
                     data.version = node.coeVersion;
-                    
+
                     // An alle registrierten Listener weiterleiten
                     node.listeners.forEach(listener => {
                         listener(data);
@@ -86,5 +88,5 @@ module.exports = function(RED) {
             }
         });
     }
-    RED.nodes.registerType("cmi-config", CMIConfigNode);
+    RED.nodes.registerType("cmiconfig", CMIConfigNode);
 };

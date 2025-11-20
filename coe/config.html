@@ -1,7 +1,7 @@
 <!-- CMI Configuration Node -->
  
 <script type="text/javascript">
-    RED.nodes.registerType('cmi-config', {
+    RED.nodes.registerType('cmiconfig', {
         category: 'config',
         defaults: {
             name: { value: "" },
@@ -15,25 +15,25 @@
     });
 </script>
 
-<script type="text/html" data-template-name="cmi-config">
+<script type="text/html" data-template-name="cmiconfig">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="config.label.name"></span></label>
-        <input type="text" id="node-input-name">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="config.label.name"></span></label>
+        <input type="text" id="node-config-input-name">
     </div>
     <div class="form-row">
-        <label for="node-input-address"><i class="fa fa-globe"></i> <span data-i18n="config.label.address"></span></label>
-        <input type="text" id="node-input-address" placeholder="192.168.1.100">
+        <label for="node-config-input-address"><i class="fa fa-globe"></i> <span data-i18n="config.label.address"></span></label>
+        <input type="text" id="node-config-input-address" placeholder="192.168.1.100">
     </div>
     <div class="form-row">
-        <label for="node-input-coeVersion"><i class="fa fa-cog"></i> <span data-i18n="config.label.coeVersion"></span></label>
-        <select id="node-input-coeVersion">
+        <label for="node-config-input-coeVersion"><i class="fa fa-cog"></i> <span data-i18n="config.label.coeVersion"></span></label>
+        <select id="node-config-input-coeVersion">
             <option value="1">V1</option>
             <option value="2">V2</option>
         </select>
     </div>
 </script>
 
-<script type="text/html" data-help-name="cmi-config">
+<script type="text/html" data-help-name="cmiconfig">
     <p><strong><span data-i18n="config.label.coeVersion"></span>:</strong></p>
     <ul>
         <li><b>V1:</b> <span data-i18n="config.help.v1"></span></li>

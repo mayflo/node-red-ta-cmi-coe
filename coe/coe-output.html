@@ -1,11 +1,12 @@
 <!-- CoE Output Node -->
+ 
 <script type="text/javascript">
     RED.nodes.registerType('coe-output', {
         category: 'TA CMI',
         color: '#C0DEED',
         defaults: {
             name: { value: "" },
-            cmiconfig: { value: "", type: "cmi-config", required: true },
+            cmiconfig: { value: "", type: "cmiconfig", required: true },
             nodeNumber: { value: 1, validate: RED.validators.number() },
             outputNumber: { value: 1, validate: RED.validators.number() },
             dataType: { value: "analog" },

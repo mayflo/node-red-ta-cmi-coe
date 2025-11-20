@@ -71,7 +71,7 @@ Die Bibliothek wurde für UVR610 entwickelt und getestet, funktioniert aber grun
 
 Erstelle zunächst eine CMI Configuration:
 - Öffne einen beliebigen Node zur Bearbeitung
-- Bei "CMI Config" auf Plus klicken → "Add new CMI-config..."
+- Bei "CMI Config" auf Plus klicken → "Add new CMI config..."
 - **CMI Address**: (Feste) IP-Addresse des CMI
 - **CoE Version**: CoE V1 (Standard)
 

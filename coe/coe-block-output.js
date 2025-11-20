@@ -1,8 +1,11 @@
-// CoE Block Output Node (with 4 input ports)
+/**
+ * CoE Block Output Node (with 4 input ports)
+ */ 
 
 module.exports = function(RED) {
     'use strict';
-    const { createCoEPacket, getBlockState, setBlockState, setBlockUnits } = require('../lib/utils')
+    const { createCoEPacket } = require('../lib/coe');
+    const { getBlockState, setBlockState, setBlockUnits } = require('../lib/queueing');
 
     function CoEBlockOutputNode(config) {
         RED.nodes.createNode(this, config);

@@ -1,11 +1,12 @@
 <!-- CoE Monitor Node -->
+ 
 <script type="text/javascript">
     RED.nodes.registerType('coe-monitor', {
         category: 'TA CMI',
         color: '#FFCC66',
         defaults: {
             name: { value: "" },
-            cmiconfig: { value: "", type: "cmi-config", required: true },
+            cmiconfig: { value: "", type: "cmiconfig", required: true },
             filterNodeNumber: { value: 0, validate: RED.validators.number() },
             filterDataType: { value: "all" },
             includeRaw: { value: false }

@@ -21,7 +21,7 @@
       "coe-output": "coe/coe-output.js",
       "coe-block-output": "coe/coe-block-output.js",
       "coe-monitor": "coe/coe-monitor.js",
-      "config": "coe/config.js"
+      "cmiconfig": "coe/config.js"
     }
   },
   "dependencies": {},

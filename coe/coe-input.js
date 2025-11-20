@@ -1,4 +1,6 @@
-// CoE Input Node 
+/**
+ * CoE Input Node
+ */ 
 
 module.exports = function(RED) {
     'use strict';
@@ -8,6 +10,7 @@ module.exports = function(RED) {
     function CoEInputNode(config) {
         RED.nodes.createNode(this, config);
         const node = this;
+        const CoEVersion = config.CoEVersion;
         
         node.cmiConfig = RED.nodes.getNode(config.cmiconfig);
         
@@ -28,51 +31,55 @@ module.exports = function(RED) {
         // Listener für eingehende Daten
         const listener = (data) => {
             
-            // Filter: Knoten-Nummer (wenn > 0)
-            if (node.nodeNumber > 0 && data.nodeNumber !== node.nodeNumber) {
-                return;
-            }
-            
-            // Filter: Block-Nummer
-            if (data.blockNumber !== blockInfo.block) {
-                return;
-            }
-            
-            // Wert extrahieren
-            let value, unit;
-            if (node.dataType === 'analog') {
-                value = data.values[blockInfo.position];
-                unit = data.units ? data.units[blockInfo.position] : null;
-            } else {
-                value = data.values[blockInfo.position] ? true : false;
-                unit = null;
-            }
-            
-            // Nachricht erstellen
-            const unitInfo = getUnitInfo(unit);
-            const msg = {
-                payload: value,
-                topic: `coe/${node.nodeNumber || data.nodeNumber}/${node.dataType}/${node.outputNumber}`,
-                coe: {
-                    nodeNumber: data.nodeNumber,
-                    blockNumber: data.blockNumber,
-                    outputNumber: node.outputNumber,
-                    dataType: node.dataType,
-                    version: data.version,
-                    unit: unit,
-                    unitName: unitInfo.name,
-                    unitSymbol: unitInfo.symbol,
-                    sourceIP: data.sourceIP,
-                    raw: data
+            for (let block of data) {
+                if (!block) continue;
+                
+                // Filter: Knoten-Nummer (wenn > 0)
+                if (node.nodeNumber > 0 && block.nodeNumber !== node.nodeNumber) {
+                    return;
                 }
+                
+                // Filter: Block-Nummer
+                if (block.blockNumber !== blockInfo.block) {
+                    return;
+                }
+                
+                // Wert extrahieren
+                let value, unit;
+                if (node.dataType === 'analog') {
+                    value = block.values[blockInfo.position];
+                    unit = block.units ? block.units[blockInfo.position] : null;
+                } else {
+                    value = block.values[blockInfo.position] ? true : false;
+                    unit = null;
+                }
+                
+                // Nachricht erstellen
+                const unitInfo = getUnitInfo(unit, CoEVersion);
+                const msg = {
+                    payload: value,
+                    topic: `coe/${node.nodeNumber || block.nodeNumber}/${node.dataType}/${node.outputNumber}`,
+                    coe: {
+                        nodeNumber: block.nodeNumber,
+                        blockNumber: block.blockNumber,
+                        outputNumber: node.outputNumber,
+                        dataType: node.dataType,
+                        version: block.version,
+                        unit: unit,
+                        unitName: unitInfo.name,
+                        unitSymbol: unitInfo.symbol,
+                        sourceIP: data.sourceIP,
+                        raw: block
+                    }
+                };
+                
+                node.send(msg);
+                node.status({
+                    fill:"green", 
+                    shape:"dot", 
+                    text:`${value} ${unitInfo.symbol || ''}`
+                });
             };
-            
-            node.send(msg);
-            node.status({
-                fill:"green", 
-                shape:"dot", 
-                text:`${value} ${unitInfo.symbol || ''} [v${data.version}]`
-            });
         };
 
         node.cmiConfig.registerListener(listener);

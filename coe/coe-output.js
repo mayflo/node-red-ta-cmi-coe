@@ -1,4 +1,6 @@
-// CoE Output Node (Sending of values)
+/**
+ * CoE Output Node (Sending of values)
+ */ 
 
 module.exports = function(RED) {
     'use strict';
