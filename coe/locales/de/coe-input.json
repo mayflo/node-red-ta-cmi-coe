@@ -1,0 +1,14 @@
+{
+    "coe-input": {
+        "label": {
+            "name": "Name",
+            "cmiconfig": "CMI Konfig",
+            "nodeNumber": "Knoten",
+            "outputNumber": "Eingang",
+            "dataType": "Datentyp"
+        },
+        "placeholder": {
+            "nodeNumber": "1-62, 0 = beliebig"
+        }
+    }
+}

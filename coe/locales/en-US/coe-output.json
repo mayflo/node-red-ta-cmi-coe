@@ -4,20 +4,9 @@
             "name": "Name",
             "cmiconfig": "CMI Config",
             "nodeNumber": "Node",
-            "outputNumber": "Network Output",
+            "outputNumber": "Output",
             "dataType": "Data Type",
             "unit": "Unit"
-        },
-        "help": {
-            "description": "Sends individual values to a TA CMI via CoE.",
-            "nodeNumber": "CAN node number (1-62)",
-            "outputNumber": "Number of Network Output (Analog 1-32, Digital 1-16)",
-            "dataType": "Analog (numeric) or Digital (boolean)",
-            "unit": "Unit of measurement (analog only)",
-            "version": "CoE version is set in the Config Node",
-            "debouncing": "Values are buffered for 50ms to prevent overwriting",
-            "inputs": "1 input per Output Node",
-            "outputs": "2 outputs: [0] pass-through message, [1] debug info (hex, block state, units)"
         }
     }
 }

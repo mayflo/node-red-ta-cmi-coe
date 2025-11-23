@@ -1,0 +1,14 @@
+<script type="text/html" data-help-name="coe-output">
+    <p>Sends single values to a TA CMI via CoE.</p>
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Node:</b> CAN node number (1-62)</li>
+        <li><b>Input:</b> Network output number (Analog 1-32, Digital 1-16)</li>
+        <li><b>Data Type:</b> Analog (numeric) or Digital (boolean)</li>
+        <li><b>Unit:</b> Measurement unit (analog only)</li>
+    </ul>
+    <h3>Outputs</h3>
+    <p>2 outputs: [0] Passthrough message, [1] Debug info (Hex, Block-State, Units)</p>
+    <h3>Notes</h3>
+    <p>Values are buffered for 50ms to prevent mutual overwriting.</p>
+</script>

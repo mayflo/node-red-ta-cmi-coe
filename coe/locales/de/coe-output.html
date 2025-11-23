@@ -1,0 +1,14 @@
+<script type="text/html" data-help-name="coe-output">
+    <p>Sendet einzelne Werte an eine TA CMI via CoE.</p>
+    <h3>Konfiguration</h3>
+    <ul>
+        <li><b>Knoten:</b> CAN Knoten-Nummer (1-62)</li>
+        <li><b>Eingang:</b> Nummer des Netzwerkausgangs (Analog 1-32, Digital 1-16)</li>
+        <li><b>Datentyp:</b> Analog (numerisch) oder Digital (boolean)</li>
+        <li><b>Einheit:</b> Messeinheit (nur für analog)</li>
+    </ul>
+    <h3>Ausgänge</h3>
+    <p>2 Ausgänge: [0] durchgeleitete Message, [1] Debug-Info (Hex, Block-State, Units)</p>
+    <h3>Hinweise</h3>
+    <p>Werte werden 50ms gepuffert um gegenseitiges Überschreiben zu vermeiden</p>
+</script>

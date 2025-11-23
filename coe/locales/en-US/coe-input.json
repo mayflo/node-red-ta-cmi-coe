@@ -4,18 +4,11 @@
             "name": "Name",
             "cmiconfig": "CMI Config",
             "nodeNumber": "Node",
-            "outputNumber": "Network Input",
+            "outputNumber": "Input",
             "dataType": "Data Type"
         },
         "placeholder": {
             "nodeNumber": "1-62, 0 = any"
-        },
-        "help": {
-            "description": "Receives values from a TA CMI via CoE (CAN over Ethernet).",
-            "nodeNumber": "CAN node number (1-62, 0 = receive from any node - not recommended in production)",
-            "outputNumber": "Number of Network Input (1-32)",
-            "dataType": "Analog (1-32) or Digital (1-32)",
-            "version": "CoE version is set in the Config Node"
         }
     }
 }

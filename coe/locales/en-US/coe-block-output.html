@@ -1,0 +1,20 @@
+<script type="text/html" data-help-name="coe-block-output">
+    <p>Sends a complete data block (4 values) to a TA CMI via CoE.</p>
+    <h3>Configuration</h3>
+    <ul>
+        <li><b>Node:</b> CAN node number (1-62)</li>
+        <li><b>Data Type:</b> Analog (4 values) or Digital (4 bits from Block 0 or 9)</li>
+        <li><b>Data Block:</b> Block number (Editor: 1-8 for both types)</li>
+    </ul>
+    <h3>Block Mapping</h3>
+    <p>Analog: 1-8 map directly to CoE Blocks 1-8. Digital: 1-4 → Block 0 (Bits 0-15), 5-8 → Block 9 (Bits 0-15)</p>
+    <h3>Inputs</h3>
+    <p>4 fixed inputs (Out 1-4 for Analog, Bit 1-4 for Digital)</p>
+    <h3>Outputs</h3>
+    <p>2 outputs: [0] Empty, [1] Debug info</p>
+    <h3>Notes</h3>
+    <ul>
+        <li>Values are buffered for 100ms to prevent overwrites.</li>
+        <li>All 4 values are sent together as an atomic update.</li>
+    </ul>
+</script>

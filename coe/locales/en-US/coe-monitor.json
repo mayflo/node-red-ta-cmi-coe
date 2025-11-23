@@ -5,17 +5,11 @@
             "cmiconfig": "CMI Config",
             "filterNodeNumber": "Filter Node",
             "filterDataType": "Filter Type",
-            "includeRaw": "Include Raw Data"
+            "includeRaw": "Include Raw Data",
+            "all": "All"
         },
         "placeholder": {
             "filterNodeNumber": "0 = all"
-        },
-        "help": {
-            "description": "Receives and monitors all CoE (CAN over Ethernet) packets from all sources.",
-            "ideal": "Ideal for debugging, logging and monitoring all CoE traffic.",
-            "filterNode": "Optional: Filter packets from a specific CAN node (0 = all)",
-            "filterType": "Filter by data type: All, Analog only or Digital only",
-            "includeRaw": "Add complete raw data to msg.payload.raw"
         }
     }
 }

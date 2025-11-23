@@ -1,0 +1,11 @@
+{
+    "coe-block-output": {
+        "label": {
+            "name": "Name",
+            "cmiconfig": "CMI Konfig",
+            "nodeNumber": "Knoten",
+            "dataType": "Datentyp",
+            "blockNumber": "Datenblock"
+        }
+    }
+}

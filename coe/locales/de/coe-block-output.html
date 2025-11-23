@@ -1,0 +1,20 @@
+<script type="text/html" data-help-name="coe-block-output">
+    <p>Sendet einen kompletten Datenblock (4 Werte) an eine TA CMI via CoE.</p>
+    <h3>Konfiguration</h3>
+    <ul>
+        <li><b>Knoten:</b> CAN Knoten-Nummer (1-62)</li>
+        <li><b>Datentyp:</b> Analog (4 Werte) oder Digital (4 Bits von Block 0 oder 9)</li>
+        <li><b>Datenblock:</b> Block-Nummer (Editor: 1-8 für beide Typen)</li>
+    </ul>
+    <h3>Block-Zuordnung</h3>
+    <p>Analog: 1-8 direkt zu CoE Blocks 1-8. Digital: 1-4 → Block 0 (Bits 0-15), 5-8 → Block 9 (Bits 0-15)</p>
+    <h3>Eingänge</h3>
+    <p>4 fixe Eingänge (Out 1-4 für Analog, Bit 1-4 für Digital)</p>
+    <h3>Ausgänge</h3>
+    <p>2 Ausgänge: [0] Leer, [1] Debug-Info</p>
+    <h3>Hinweise</h3>
+    <ul>
+        <li>Werte werden 100ms gepuffert um Überschreibungen zu vermeiden</li>
+        <li>Alle 4 Werte werden zusammen als atomares Update gesendet</li>
+    </ul>
+</script>

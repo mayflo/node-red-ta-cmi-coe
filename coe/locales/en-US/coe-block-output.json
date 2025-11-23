@@ -6,17 +6,6 @@
             "nodeNumber": "Node",
             "dataType": "Data Type",
             "blockNumber": "Data Block"
-        },
-        "help": {
-            "description": "Sends a complete data block (4 values) to a TA CMI via CoE.",
-            "nodeNumber": "CAN node number (1-62)",
-            "blockNumber": "Block number (Editor: 1-8 for both types)",
-            "dataType": "Analog (4 values) or Digital (4 bits from block 0 or 9)",
-            "blockMapping": "Analog: 1-8 directly to CoE blocks 1-8. Digital: 1-4 → Block 0 (bits 0-15), 5-8 → Block 9 (bits 0-15)",
-            "inputs": "4 fixed inputs (Out 1-4 for Analog, Bit 1-4 for Digital)",
-            "outputs": "2 outputs: [0] empty, [1] debug info",
-            "debouncing": "Values are buffered for 100ms to prevent overwriting",
-            "atomic": "All 4 values are sent together as atomic update"
         }
     }
 }

@@ -1,0 +1,15 @@
+{
+    "coe-monitor": {
+        "label": {
+            "name": "Name",
+            "cmiconfig": "CMI Konfig",
+            "filterNodeNumber": "Filter Knoten",
+            "filterDataType": "Filter Typ",
+            "includeRaw": "Rohdaten einschließen",
+            "all": "Alle"
+        },
+        "placeholder": {
+            "filterNodeNumber": "0 = alle"
+        }
+    }
+}

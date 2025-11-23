@@ -5,9 +5,7 @@
 module.exports = function(RED) {
     'use strict';
     const { getBlockInfo } = require('../lib/utils')
-    const { queueAndSend } = require('../lib/queueing');
-    
-    const DEBOUNCE_DELAY = 200; // ms
+    const { getBlockUnits, queueAndSend } = require('../lib/queueing');
 
     function CoEOutputNode(config) {
         RED.nodes.createNode(this, config);
@@ -33,15 +31,17 @@ module.exports = function(RED) {
             
             if (node.dataType === 'analog') {
                 values = [undefined, undefined, undefined, undefined];
-                units = [node.unit, node.unit, node.unit, node.unit];
+                units  = [undefined, undefined, undefined, undefined];
                 
-                values[blockInfo.position] = parseFloat(msg.payload) || 0;
+                values[blockInfo.position] = parseFloat(msg.payload) ?? 0;
                 
-                if (msg.coe && msg.coe.unit !== undefined) {
-                    units[blockInfo.position] = parseInt(msg.coe.unit);
-                }
+                // Set unit only for the specific output
+                units[blockInfo.position] = 
+                    (msg.coe && msg.coe.unit !== undefined) 
+                    ? parseInt(msg.coe.unit) 
+                    : node.unit;
                 
-            } else {
+            } else { // digital
                 values = new Array(16).fill(undefined);
                 values[blockInfo.position] = msg.payload ? 1 : 0;
                 units = null;
@@ -50,7 +50,7 @@ module.exports = function(RED) {
             node.status({
                 fill: "yellow",
                 shape: "dot",
-                text: `queued (${DEBOUNCE_DELAY}ms) [${version}]`
+                text: `queued [${version}]`
             });
             
             queueAndSend(node, node.nodeNumber, blockInfo.block, values, units, node.dataType, version, node.cmiConfig, node.cmiAddress);

@@ -1,0 +1,12 @@
+{
+    "coe-output": {
+        "label": {
+            "name": "Name",
+            "cmiconfig": "CMI Konfig",
+            "nodeNumber": "Knoten",
+            "outputNumber": "Ausgang",
+            "dataType": "Datentyp",
+            "unit": "Einheit"
+        }
+    }
+}
