@@ -1,0 +1,47 @@
+# Name des Workflows
+name: Publish to npm
+
+# Wann der Workflow ausgeführt werden soll
+on:
+  # Ausführen, wenn ein Git-Tag gepusht wird, das mit "v" gefolgt von Zahlen beginnt (z.B. v1.0.0, v1.0.1-beta)
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*' 
+
+# Jobs, die ausgeführt werden sollen
+jobs:
+  publish:
+    # Ausführen auf einem frischen Ubuntu-Runner
+    runs-on: ubuntu-latest
+    
+    # Schritte des Jobs
+    steps:
+      # 1. Code auschecken
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      # 2. Node.js einrichten (Versionsspezifisch)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Verwenden Sie eine LTS-Version (z.B. 20)
+          # Konfiguriert npm, um das geheime Token für die Authentifizierung zu verwenden
+          registry-url: 'https://registry.npmjs.org'
+
+      # 3. Abhängigkeiten installieren
+      - name: Install dependencies
+        # Nur Produktiv-Abhängigkeiten installieren, um Build-Zeit zu sparen
+        run: npm ci 
+        
+      # 4. Optional: Tests ausführen (Empfohlen!)
+      - name: Run tests
+        # Stellen Sie sicher, dass Ihr Test-Skript in package.json definiert ist
+        run: npm test
+
+      # 5. Auf npm veröffentlichen
+      - name: Publish package
+        run: npm publish
+        env:
+          # Überträgt das gespeicherte Secret an die Umgebungsvariable, 
+          # die vom setup-node Action Schritt erwartet wird
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
