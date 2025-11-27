@@ -165,9 +165,10 @@ Empfängt Werte von der CMI.
         outputNumber: 1,              // Netzwerkausgang
         dataType: "analog",           // Typ
         unit: 1,                      // Unit ID (z.B. 1 = °C)
-        unitName: "°C",              // Unit Name
-        sourceIP: "192.168.1.100",   // IP der CMI
-        raw: { ... }                 // Rohdaten
+        unitName: "Temperatur °C",    // Unit Name
+        unitSymbol: "°C°",            // Unit Symbol
+        sourceIP: "192.168.1.100",    // IP der CMI
+        raw: { ... }                  // Rohdaten
     }
 }
 ```
@@ -192,7 +193,7 @@ msg.coe = { unit: 1 };  // Überschreibt Config
 
 1. **CMI CoE-Ausgänge prüfen**: IP und Port korrekt?
 2. **Lokale IP**: Max. Empfangsbereich mit Lokale IP = 0.0.0.0 (alle) überprüfen (insbesondere für Docker-Umgebungen)
-3. **Firewall**: Port 5441 UDP offen?
+3. **Firewall**: Port 5441/UDP (CoE V1) bzw. 5442/UDP (CoE V2) offen?
 4. **Node Number**: Stimmt mit CMI-Konfiguration überein?
 5. **Debug aktivieren**: "Receive All" aktivieren und Debug-Output prüfen
 
@@ -235,15 +236,6 @@ if (!context.timer) {
     }, intervalMinutes * 60 * 1000);
 }
 
-return msg;
-```
-
-### Mehrere Werte gleichzeitig
-
-```javascript
-// Verwende Block Output für Effizienz
-msg.payload = [temp1, temp2, temp3, temp4];
-msg.coe = { units: [1, 1, 1, 1] };  // Alle °C
 return msg;
 ```
 
